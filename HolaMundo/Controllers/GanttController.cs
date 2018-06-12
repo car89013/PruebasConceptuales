@@ -7,6 +7,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using System;
 using HolaMundo.Service;
+using Datos;
 
 namespace HolaMundo.Controllers
 {
@@ -40,12 +41,62 @@ namespace HolaMundo.Controllers
 
         public JsonResult Tasks([DataSourceRequest] DataSourceRequest request)
         {
-            var tasks = new List<TaskViewModel> {
-            new TaskViewModel { TaskID = 1, Title = "My Project", Start = new DateTime(2014,8,21,11,00,00), End = new DateTime(2014,8,25,18,30,00), Summary = true, Expanded = true, ParentID = null, OrderId = 1 },
-            new TaskViewModel { TaskID = 2, ParentID = 1, Title = "Task 1", Start = new DateTime(2014,8,21,11,00,00), End = new DateTime(2014,8,23,14,30,00), OrderId = 2 },
-            new TaskViewModel { TaskID = 3, ParentID = 1, Title = "Task 2", Start = new DateTime(2014,8,21,15,00,00), End = new DateTime(2014,8,25,18,00,00), OrderId = 3 }
-        };
-
+            followupEntities context = new followupEntities();
+            List<TaskViewModel> tasks = new List<TaskViewModel>();
+            var queryPrograms = context.master_followup.ToList();
+            int contador = 1;
+            foreach (var item in queryPrograms)
+            {
+                if(item.start_date != null)
+                {
+                    TaskViewModel newRecord = new TaskViewModel();
+                    newRecord.TaskID = (int)item.project_num;
+                    newRecord.ParentID = null;
+                    //newRecord.Thumbnail =
+                    newRecord.Type = item.support_type!=null?item.support_type.support_name:string.Empty;
+                    newRecord.Title = item.project_name;
+                    newRecord.Site = item.site1!=null?item.site1.site_name:string.Empty;
+                    newRecord.SeatClass = item.seat_class1!=null?item.seat_class1.seat_class_name:string.Empty;
+                    newRecord.Customer = item.customer;
+                    newRecord.Status = item.status1!=null?item.status1.status_name:string.Empty;
+                    newRecord.PlannedBudget = item.planned_budget;
+                    newRecord.ActualBudget = item.actual_budget;
+                    newRecord.Start = (DateTime)item.start_date;
+                    newRecord.End = (DateTime)item.end_date;
+                    newRecord.Summary = false;
+                    newRecord.Expanded = false;
+                    newRecord.PercentComplete = Convert.ToDecimal(item.progress);
+                    newRecord.OrderId = contador;
+                    tasks.Add(newRecord);
+                    contador++;
+                }
+            }
+            var queryBricks = context.table_project_rd.ToList();
+            foreach (var brick in queryBricks)
+            {
+                master_followup item = brick.master_followup;
+                TaskViewModel newRecord = new TaskViewModel();
+                newRecord.TaskID = (int)item.project_num;
+                newRecord.ParentID = brick.id_project;
+                //newRecord.Thumbnail =
+                newRecord.Type = item.support_type != null ? item.support_type.support_name : string.Empty;
+                newRecord.Title = item.project_name;
+                newRecord.Site = item.site1 != null ? item.site1.site_name : string.Empty;
+                newRecord.SeatClass = item.seat_class1 != null ? item.seat_class1.seat_class_name : string.Empty;
+                newRecord.Customer = item.customer;
+                newRecord.Status = item.status1 != null ? item.status1.status_name : string.Empty;
+                newRecord.PlannedBudget = item.planned_budget;
+                newRecord.ActualBudget = item.actual_budget;
+                newRecord.Start = (DateTime)item.start_date;
+                newRecord.End = (DateTime)item.end_date;
+                newRecord.Summary = false;
+                newRecord.Expanded = false;
+                newRecord.PercentComplete = Convert.ToDecimal(item.progress);
+                newRecord.OrderId = contador;
+                tasks.Add(newRecord);
+                contador++;
+            }
+            
             return Json(tasks.AsQueryable().ToDataSourceResult(request));
         }
 

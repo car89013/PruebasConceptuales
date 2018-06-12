@@ -11,7 +11,15 @@ namespace HolaMundo.Models
         public int TaskID { get; set; }
         public int? ParentID { get; set; }
 
+        public string Thumbnail { get; set; }
+        public string Type { get; set; }
         public string Title { get; set; }
+        public string Site { get; set; }
+        public string SeatClass { get; set; }
+        public string Customer { get; set; }
+        public string Status { get; set; }
+        public string PlannedBudget { get; set; }
+        public string ActualBudget { get; set; }
 
         private DateTime start;
         public DateTime Start
