@@ -1,0 +1,49 @@
+﻿@model List<HolaMundo.Models.Pelicula>
+
+@using GridMvc.Html
+@{
+    Layout = null;
+    ViewBag.Title = "ListaPeliculas";
+}
+
+<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Message</h3>
+
+<div>
+    @Html.Grid(Model).Columns(columns =>
+                    {
+                        columns.Add(c => c.Titulo).Titled("Título").Filterable(true);
+                        columns.Add(c => c.Duracion).Titled("Duración").Filterable(true);
+                        columns.Add(c => c.Pais).Titled("Pais").Filterable(true);
+                        columns.Add(c => c.Publicacion).Titled("Estreno").Filterable(true);
+                        columns.Add()
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .SetWidth(30)                        
+                        .RenderValueAs(o => Html.ActionLink("Editar", "Edit", new { id = o.Titulo }));
+
+                    }).WithPaging(1).Sortable(true)
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Duración</th>
+                <th>Lanzamiento</th>
+                <th>País</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pelicula in Model)
+            {
+                <tr>
+                    <td>@pelicula.Titulo</td>
+                    <td>@pelicula.Duracion</td>
+                    <td>@pelicula.Publicacion.ToString("dd/MM/yyy")</td>
+                    <td>@pelicula.Pais</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    @Styles.Render("~/Content/Gridmvc.css")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+	<!--This bundle was moved by the Telerik VS Extensions for compatibility reasons-->
+	@Scripts.Render("~/bundles/jquery")
+	<link href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.mobile.all.min.css" rel="stylesheet" type="text/css" />
+	<link href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>
+	<script src="https://kendo.cdn.telerik.com/2018.2.516/js/jszip.min.js"></script>
+	<script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
+	<script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.aspnetmvc.min.js"></script>
+	<script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+</head> 
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top  btn-primary">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Ideas Center", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Ideas", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Issues", "About", "Home")</li>
+                    <li class="dropdown">
+                        <a href="@Url.Action("Contact", "Home")" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                            Management <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Strategic Cluster</a></li>
+                            <li><a href="#">Technology Cluster</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Challenge</a></li>
+                            <li><a href="#">Challenge Category</a></li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("Help", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Reports", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Committee Review", "ListaPeliculas", "Home")</li>
+                    <li>@Html.ActionLink("Export", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Data Backup", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Show Gantt", "ShowGantt", "Gantt")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>
+        </footer>
+    </div>
+
+    
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/gridmvc.min.js")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
