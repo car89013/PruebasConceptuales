@@ -9,6 +9,7 @@ namespace HolaMundo.Models
     public class TaskViewModel : IGanttTask
     {
         public int TaskID { get; set; }
+        public int ProjectNum { get; set; }
         public int? ParentID { get; set; }
 
         public string Thumbnail { get; set; }
