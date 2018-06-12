@@ -1,284 +1,683 @@
-﻿@*<!DOCTYPE html>
-<html>
-<head>*@
-    <title>Column Templates</title>
-    @*<link rel="stylesheet" href="//kendo.cdn.telerik.com/2015.3.930/styles/kendo.common.min.css" />
-    <link rel="stylesheet" href="//kendo.cdn.telerik.com/2015.3.930/styles/kendo.metro.min.css" />
-    <style>
-        html {
-            font-size: 14px;
-            font-family: Arial, Helvetica, sans-serif;
+
+<div id="gantt" class="container-fluid"></div>
+
+
+
+@(Html.Kendo().Window()
+
+
+                                        .Name("modalBoxImg")
+
+
+                                        .Title("")
+
+
+                                        .Visible(false)
+
+
+                                        .Modal(true)
+
+
+                                        .Draggable(false)
+
+
+                                        .Content(@<text>
+
+
+                                            <div class="img-responsive">
+
+
+                                                <img src="@Url.Content("https://hipertextual.com/files/2018/04/Aviointeriors-Skyrider-670x377.jpg")" />
+
+
+                                            </div>
+
+
+                                        </text>)
+
+
+                                                                        .Resizable()
+
+
+                                                                        .Width(800)
+
+
+                                                                        .Height(700)
+
+
+                                                                        .Actions(actions => actions.Close())
+
+
+                                                                        .Events(ev => ev.Close("onClose"))
+
+
+)
+
+
+
+<script>
+
+
+
+    function onClose() {
+
+
+    }
+
+
+
+    function onModalBox() {
+
+
+        $("#modalBoxImg").data("kendoWindow").open().center();
+
+
+    }
+
+
+
+    function onDataBound(e) {
+
+
+        var ganttList = e.sender.list;
+
+
+        var dataItems = ganttList.dataSource.view();
+
+
+        for (var j = 0; j < dataItems.length; j++) {
+
+
+            var dataItem = dataItems[j];
+
+
+            var row = $("[data-uid='" + dataItem.uid + "']");
+
+
+            //var span = row.find("td").eq(0).find("span").last();
+
+
+            var span = row.find("td").eq(0).find("span").last();
+
+
+            span.replaceWith(function () {
+
+
+                var url = $.trim($(this).text());
+
+
+                return '<a href="https://www.w3schools.com" target="_blank">' + dataItem.id + '</a>';
+
+
+            });
+
+
+            var span2 = row.find("td").eq(2).find("span").last();
+
+
+            span2.replaceWith(function () {
+
+
+                var url = $.trim($(this).text());
+
+
+                return '<a href="#" class="thumbnail" onclick="onModalBox()"><img src = "https://hipertextual.com/files/2018/04/Aviointeriors-Skyrider-670x377.jpg" /></a >';
+
+
+            });
+
+
         }
-    </style>
 
-    <script src="//kendo.cdn.telerik.com/2015.3.930/js/jquery.min.js"></script>
-    <script src="//kendo.cdn.telerik.com/2015.3.930/js/kendo.all.min.js"></script>
-    <style>
 
-        .k-gantt-treelist span > strong {
-            background: yellow;
-        }
-    </style>
-</head>
-<body>*@
-    <div id="example">
-        <div id="gantt"></div>
+    }
 
-        <script>
 
-            function onDataBound(e) {
-                var ganttList = e.sender.list;
-                var dataItems = ganttList.dataSource.view();
-                for (var j = 0; j < dataItems.length; j++) {
-                    var dataItem = dataItems[j];
-                    var row = $("[data-uid='" + dataItem.uid + "']");
-                    //var span = row.find("td").eq(0).find("span").last();
-                    var span = row.find("td").eq(0).find("span").last();
-                    span.replaceWith(function () {
-                        // custom logic for creating the link URL
-                        var url = $.trim($(this).text());
-                        return '<a href="https://www.w3schools.com">' + dataItem.id + '</a>';
-                    });
-                    //span
-                    //    .parent()
-                    //    .find("a,text")
-                    //    .remove();
-                    //span.prepend("<a href='https://www.w3schools.com'>" + dataItem.id + "</a>");
-                    var span2 = row.find("td").eq(2).find("span").last();
-                    span2.replaceWith(function () {
-                        // custom logic for creating the link URL
-                        var url = $.trim($(this).text());
-                        return '<a href="#" class="thumbnail"><img src = "https://hipertextual.com/files/2018/04/Aviointeriors-Skyrider-670x377.jpg" /></a >';
-                    });
+
+    $(document).ready(function () {
+
+
+        var serviceRoot = "//demos.telerik.com/kendo-ui/service";
+
+
+
+        $.get("Tasks", function (data) {
+
+
+            console.log(data);
+
+
+        });
+
+
+
+        var tasksDataSource = new kendo.data.GanttDataSource({
+
+
+            transport: {
+
+
+                read: {
+
+
+                    dataType: "json",
+
+
+                    url: "Tasks"
+
+
                 }
+
+
+            },
+
+
+            pageSize: 20,
+
+
+            schema: {
+
+
+                model: {
+
+
+                    id: "id",
+
+
+                    fields: {
+
+
+                        id: { from: "ID", type: "number" },
+
+
+                        orderId: { from: "OrderID", type: "number", validation: { required: true } },
+
+
+                        parentId: { from: "ParentID", type: "number", defaultValue: null, validation: { required: true } },
+
+
+                        start: { from: "Start", type: "date" },
+
+
+                        end: { from: "End", type: "date" },
+
+
+                        title: { from: "Title", defaultValue: "", type: "string" },
+
+
+                        percentComplete: { from: "PercentComplete", type: "number" },
+
+
+                        summary: { from: "Summary", type: "boolean" },
+
+
+                        expanded: { from: "Expanded", type: "boolean", defaultValue: true }
+
+
+                    }
+
+
+                }
+
+
             }
 
-            $(document).ready(function () {
-                var serviceRoot = "//demos.telerik.com/kendo-ui/service";
-                var tasksDataSource = new kendo.data.GanttDataSource({
-                    transport: {
-                        read: {
-                            url: serviceRoot + "/GanttTasks",
-                            dataType: "jsonp"
-                        },
-                        update: {
-                            url: serviceRoot + "/GanttTasks/Update",
-                            dataType: "jsonp"
-                        },
-                        destroy: {
-                            url: serviceRoot + "/GanttTasks/Destroy",
-                            dataType: "jsonp"
-                        },
-                        create: {
-                            url: serviceRoot + "/GanttTasks/Create",
-                            dataType: "jsonp"
-                        },
-                        parameterMap: function (options, operation) {
-                            if (operation !== "read") {
-                                return { models: kendo.stringify(options.models || [options]) };
-                            }
-                        }
-                    },
-                    schema: {
-                        model: {
-                            id: "id",
-                            fields: {
-                                id: { from: "ID", type: "number" },
-                                orderId: { from: "OrderID", type: "number", validation: { required: true } },
-                                parentId: { from: "ParentID", type: "number", defaultValue: null, validation: { required: true } },
-                                start: { from: "Start", type: "date" },
-                                end: { from: "End", type: "date" },
-                                title: { from: "Title", defaultValue: "", type: "string" },
-                                percentComplete: { from: "PercentComplete", type: "number" },
-                                summary: { from: "Summary", type: "boolean" },
-                                expanded: { from: "Expanded", type: "boolean", defaultValue: true }
-                            }
-                        }
-                    }
-                });
 
-                var dependenciesDataSource = new kendo.data.GanttDependencyDataSource({
-                    transport: {
-                        read: {
-                            url: serviceRoot + "/GanttDependencies",
-                            dataType: "jsonp"
-                        },
-                        update: {
-                            url: serviceRoot + "/GanttDependencies/Update",
-                            dataType: "jsonp"
-                        },
-                        destroy: {
-                            url: serviceRoot + "/GanttDependencies/Destroy",
-                            dataType: "jsonp"
-                        },
-                        create: {
-                            url: serviceRoot + "/GanttDependencies/Create",
-                            dataType: "jsonp"
-                        },
-                        parameterMap: function (options, operation) {
-                            if (operation !== "read") {
-                                return { models: kendo.stringify(options.models || [options]) };
-                            }
-                        }
-                    },
-                    schema: {
-                        model: {
-                            id: "id",
-                            fields: {
-                                id: { from: "ID", type: "number" },
-                                predecessorId: { from: "PredecessorID", type: "number" },
-                                successorId: { from: "SuccessorID", type: "number" },
-                                type: { from: "Type", type: "number" }
-                            }
-                        }
-                    }
-                });
-
-                var gantt = $("#gantt").kendoGantt({
-                    dataSource: tasksDataSource,
-                    dependencies: dependenciesDataSource,
-                    views: [
-                        { type: "week", selected: true },
-                        "month",
-                        "year"
-                    ],
-                    columns: [
-                        { field: "id", title: "ID", width: 60 },
-                        { field: "title", title: "Title", editable: true, sortable: true, width: 200 },
-                        { field: "summary", title: "Summary", editable: true, sortable: true, width: 100 },
-                        { field: "start", title: "Start Time", format: "{0:MM/dd/yyyy}", width: 100, editable: true, sortable: true },
-                        { field: "end", title: "End Time", format: "{0:MM/dd/yyyy}", width: 100, editable: true, sortable: true }
-                    ],
-                    height: 700,
-                    Editable: false,
-                    showWorkHours: false,
-                    showWorkDays: false,
-                    Snap: false,
-                    Resizable: true,
-                    rowHeight: 85,
-                    columnHeight: 50,
-                    dataBound: onDataBound
-                }).data("kendoGantt");
-
-                $(document).bind("kendo:skinChange", function () {
-                    gantt.refresh();
-                });
-            });
-        </script>
-    </div>
-
-@*</body>
-</html>*@
-
-@*@using HolaMundo.Models;
+        });
 
 
 
-    @(Html.Kendo().Gantt<TaskViewModel, DependencyViewModel>()
-                    .Name("Gantt")
-                    .Columns(columns =>
-                    {
-                        columns.Bound(c => c.TaskID).Title("ID").Width(50);
-                        columns.Bound("title").Editable(false).Sortable(true);
-                        columns.Bound("start").Title("Start Time").Format("{0:MM/dd/yyyy}").Width(100).Editable(true).Sortable(true);
-                        columns.Bound("end").Title("End Time").Format("{0:MM/dd/yyyy}").Width(100).Editable(true).Sortable(true);
-                    })
-                    .Views(views =>
-                    {
-                        views.WeekView(weekView => weekView.Selected(true));
-                        views.MonthView();
-                        views.YearView();
-                    })
-                    .ShowWorkHours(false)
-                    .ShowWorkDays(false)
-                    .Snap(false)
-                    .Resizable(true)
-                    .DataSource(ds => ds
-                        .Read(read => read
-                            .Action("Tasks", "Gantt")
-                        )
-                        .Model(m =>
-                        {
-                            m.Id(f => f.TaskID);
-                            m.ParentId(f => f.ParentID);
-                            m.OrderId(f => f.OrderId);
-                            m.Field(f => f.Expanded).DefaultValue(true);
-                        })
-                    )
-                    .DependenciesDataSource(ds => ds
-                        .Read(read => read
-                            .Action("Dependencies", "Gantt")
-                        )
-                        .Model(m =>
-                        {
-                            m.Id(f => f.DependencyID);
-                            m.PredecessorId(f => f.PredecessorID);
-                            m.SuccessorId(f => f.SuccessorID);
-                            m.Type(f => f.Type);
-                        })
-                    )
-                    .Editable(true)
-                    .Toolbar(tb =>
-                    {
-                        tb.Add().Name("pdf");
-                    })
-                    .Pdf(pdf => pdf
-                        .FileName("Export.pdf")
-                        .ProxyURL(Url.Action("Pdf_Export_Save", "Gantt"))
-                    )
+        var gantt;
 
-    )
 
-    @(Html.Kendo().Gantt<TaskViewModel, DependencyViewModel>()
-                .Name("gantt")
-                .Columns(columns =>
-                {
-                    columns.Bound(c => c.TaskID).Title("ID").Width(50);
-                    columns.Bound("title").Editable(true).Sortable(true);
-                    columns.Bound("start").Title("Start Time").Format("{0:MM/dd/yyyy}").Width(100).Editable(true).Sortable(true);
-                    columns.Bound("end").Title("End Time").Format("{0:MM/dd/yyyy}").Width(100).Editable(true).Sortable(true);
-                })
-                .Views(views =>
-                {
-                    views.DayView();
-                    views.WeekView(weekView => weekView.Selected(true));
-                    views.MonthView();
-                })
-                .Height(700)
-                .ShowWorkHours(false)
-                .ShowWorkDays(false)
-                .Snap(false)
-                .DataSource(d => d
-                    .Model(m =>
-                    {
-                        m.Id(f => f.TaskID);
-                        m.ParentId(f => f.ParentID);
-                        m.OrderId(f => f.OrderId);
-                        m.Field(f => f.Expanded).DefaultValue(true);
-                    })
-                    .Read("Read_Tasks", "Gantt")
-                    .Destroy("Destroy_Task", "Gantt")
-                    .Update(update => update.Action("Update_Task", "Gantt").Data("onUpdateCreate"))
-                    .Create(create => create.Action("Create_Task", "Gantt").Data("onUpdateCreate"))
-                )
-                .DependenciesDataSource(d => d
-                    .Model(m =>
-                    {
-                        m.Id(f => f.DependencyID);
-                        m.PredecessorId(f => f.PredecessorID);
-                        m.SuccessorId(f => f.SuccessorID);
-                        m.Type(f => f.Type);
-                    })
-                    .Read("Read_Dependencies", "Gantt")
-                    .Create("Create_Dependency", "Gantt")
-                    .Destroy("Destroy_Dependency", "Gantt")
-                )
-        )
 
-    <script>
-        // Send the dates for the newly creted/updated tasks as UTC strings
-        function onUpdateCreate(e) {
-            e.End = e.End.toISOString();
-            e.Start = e.Start.toISOString();
-        }
-    </script>*@
+        kendo.ui.GanttCustomViewM = kendo.ui.GanttView.extend({
+
+
+            name: "custom",
+
+
+
+            options: {
+
+
+                yearHeaderTemplate: kendo.template("#=kendo.toString(start, 'yyyy')#"),
+
+
+                monthHeaderTemplate: kendo.template("#=kendo.toString(start, 'MMM')#")
+
+
+            },
+
+
+
+            range: function (range) {
+
+
+                this.start = new Date("01/01/2013");
+
+
+                this.end = new Date("01/01/2018");
+
+
+            },
+
+
+
+            _generateSlots: function (incrementCallback, span) {
+
+
+                var slots = [];
+
+
+                var slotStart = new Date(this.start);
+
+
+                var slotEnd;
+
+
+
+                while (slotStart < this.end) {
+
+
+                    slotEnd = new Date(slotStart);
+
+
+                    incrementCallback(slotEnd);
+
+
+
+                    slots.push({ start: slotStart, end: slotEnd, span: span });
+
+
+
+                    slotStart = slotEnd;
+
+
+                }
+
+
+
+                return slots;
+
+
+            },
+
+
+
+            _createSlots: function () {
+
+
+                var slots = [];
+
+
+
+                slots.push(this._generateSlots(function (date) { date.setFullYear(date.getFullYear() + 1); }, 12));
+
+
+                slots.push(this._generateSlots(function (date) { date.setMonth(date.getMonth() + 1); }, 1));
+
+
+
+                return slots;
+
+
+            },
+
+
+
+            _layout: function () {
+
+
+                var rows = [];
+
+
+                var options = this.options;
+
+
+
+                rows.push(this._slotHeaders(this._slots[0], kendo.template(options.yearHeaderTemplate)));
+
+
+                rows.push(this._slotHeaders(this._slots[1], kendo.template(options.monthHeaderTemplate)));
+
+
+
+                return rows;
+
+
+            }
+
+
+        });
+
+
+
+        kendo.ui.GanttCustomViewQ = kendo.ui.GanttView.extend({
+
+
+            name: "custom",
+
+
+
+            options: {
+
+
+                yearHeaderTemplate: kendo.template("#=kendo.toString(start, 'yyyy')#"),
+
+
+                quarterHeaderTemplate: kendo.template("# return ['Q1', 'Q2', 'Q3', 'Q4'][start.getMonth() / 3] #")
+
+
+            },
+
+
+
+            range: function (range) {
+
+
+                this.start = new Date("01/01/2013");
+
+
+                this.end = new Date("01/01/2018");
+
+
+            },
+
+
+
+            _generateSlots: function (incrementCallback, span) {
+
+
+                var slots = [];
+
+
+                var slotStart = new Date(this.start);
+
+
+                var slotEnd;
+
+
+
+                while (slotStart < this.end) {
+
+
+                    slotEnd = new Date(slotStart);
+
+
+                    incrementCallback(slotEnd);
+
+
+
+                    slots.push({ start: slotStart, end: slotEnd, span: span });
+
+
+
+                    slotStart = slotEnd;
+
+
+                }
+
+
+
+                return slots;
+
+
+            },
+
+
+
+            _createSlots: function () {
+
+
+                var slots = [];
+
+
+
+                slots.push(this._generateSlots(function (date) { date.setFullYear(date.getFullYear() + 1); }, 12));
+
+
+                slots.push(this._generateSlots(function (date) { date.setMonth(date.getMonth() + 3); }, 3));
+
+
+
+                return slots;
+
+
+            },
+
+
+
+            _layout: function () {
+
+
+                var rows = [];
+
+
+                var options = this.options;
+
+
+
+                rows.push(this._slotHeaders(this._slots[0], kendo.template(options.yearHeaderTemplate)));
+
+
+                rows.push(this._slotHeaders(this._slots[1], kendo.template(options.quarterHeaderTemplate)));
+
+
+
+                return rows;
+
+
+            }
+
+
+        });
+
+
+
+        kendo.ui.GanttCustomViewY = kendo.ui.GanttView.extend({
+
+
+            name: "custom",
+
+
+
+            options: {
+
+
+                yearHeaderTemplate: kendo.template("#=kendo.toString(start, 'yyyy')#")
+
+
+            },
+
+
+
+            range: function (range) {
+
+
+                this.start = new Date("01/01/2013");
+
+
+                this.end = new Date("01/01/2018");
+
+
+            },
+
+
+
+            _generateSlots: function (incrementCallback, span) {
+
+
+                var slots = [];
+
+
+                var slotStart = new Date(this.start);
+
+
+                var slotEnd;
+
+
+
+                while (slotStart < this.end) {
+
+
+                    slotEnd = new Date(slotStart);
+
+
+                    incrementCallback(slotEnd);
+
+
+
+                    slots.push({ start: slotStart, end: slotEnd, span: span });
+
+
+
+                    slotStart = slotEnd;
+
+
+                }
+
+
+
+                return slots;
+
+
+            },
+
+
+
+            _createSlots: function () {
+
+
+                var slots = [];
+
+
+
+                slots.push(this._generateSlots(function (date) { date.setFullYear(date.getFullYear() + 1); }, 12));
+
+
+
+                return slots;
+
+
+            },
+
+
+
+            _layout: function () {
+
+
+                var rows = [];
+
+
+                var options = this.options;
+
+
+
+                rows.push(this._slotHeaders(this._slots[0], kendo.template(options.yearHeaderTemplate)));
+
+
+
+                return rows;
+
+
+            }
+
+
+        });
+
+
+
+        gantt = $("#gantt").kendoGantt({
+
+
+            dataSource: tasksDataSource,
+
+
+            //dependencies: dependenciesDataSource,
+
+
+            views: [
+
+
+                { type: "kendo.ui.GanttCustomViewM", title: "Months", selected: false },
+
+
+                { type: "kendo.ui.GanttCustomViewQ", title: "Quaterly", selected: true },
+
+
+                { type: "kendo.ui.GanttCustomViewY", title: "Year", selected: false }
+
+
+            ],
+
+
+            columns: [
+
+
+                { field: "id", title: "ID", width: 60 },
+
+
+                { field: "title", title: "Title", editable: false, sortable: false, width: 200 },
+
+
+                { field: "summary", title: "Summary", editable: false, sortable: false, width: 100 },
+
+
+                { field: "start", title: "Start Time", format: "{0:yyyy}", width: 100, editable: false, sortable: true },
+
+
+                { field: "end", title: "End Time", format: "{0:yyyy}", width: 100, editable: false, sortable: true }
+
+
+            ],
+
+
+            height: 700,
+
+
+            editable: false,
+
+
+            showWorkHours: false,
+
+
+            showWorkDays: false,
+
+
+            Snap: false,
+
+
+            resizable: true,
+
+
+            rowHeight: 85,
+
+
+            //columnHeight: 50,
+
+
+            dataBound: onDataBound
+
+
+        }).data("kendoGantt");
+
+
+
+        $(document).bind("kendo:skinChange", function () {
+
+
+            gantt.refresh();
+
+
+        });
+
+
+    });
+
+
+</script>
+
+
+
+　
